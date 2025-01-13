@@ -42,6 +42,13 @@ jobs:
           npm update --save
           npm run build
 
+      - name: Prepare Application
+        run: |
+          cp .env.example .env
+          touch database/database.sqlite
+          php artisan key:generate
+          php artisan migrate --seed
+
       - name: Run Tests
         run: php artisan test
 
