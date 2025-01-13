@@ -26,7 +26,7 @@ on:
   push:
 
 jobs:
-  update:
+  tests:
     uses: Jubeki/actions/.github/workflows/tests.yml@main
     with:
       php: '8.3'
