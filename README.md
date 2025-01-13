@@ -50,6 +50,10 @@ on:
 
 jobs:
   update:
+
+    permissions:
+      contents: write
+
     uses: Jubeki/actions/.github/workflows/automated-dependency-updates.yml@main
     with:
       php: '8.3'
