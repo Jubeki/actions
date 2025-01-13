@@ -1,0 +1,48 @@
+name: Tests
+
+on:
+  workflow_call:
+    inputs:
+      php:
+        default: "8.3"
+        type: string
+      node:
+        default: "22"
+        type: string
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+
+    name: Tests
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ inputs.php }}
+          tools: composer:v2
+          coverage: none
+
+      - name: Setup Node and NPM
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ inputs.node }}
+
+      - name: Install Composer Dependencies
+        run: |
+          composer install --prefer-stable --prefer-dist --no-interaction --no-progress
+
+      - name: Install and Build NPM Dependencies
+        run: |
+          npm ci
+          npm run build
+
+      - name: Run Tests
+        run: php artisan test
+
+      - name: Type Checking
+        run: vendor/bin/phpstan --verbose

@@ -1,0 +1,58 @@
+name: Automated Dependency Updates
+
+on:
+  workflow_call:
+    inputs:
+      php:
+        default: "8.3"
+        type: string
+      node:
+        default: "22"
+        type: string
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+
+    name: Automated Dependency Updates
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ inputs.php }}
+          tools: composer:v2
+          coverage: none
+
+      - name: Setup Node and NPM
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ inputs.node }}
+
+      - name: Bump and Normalize Composer Dependencies
+        run: |
+          composer update --prefer-stable --prefer-dist --no-interaction --no-progress
+          composer bump --no-interaction
+          composer normalize --no-interaction
+
+      - name: Bump and Build NPM Dependencies
+        run: |
+          npm update --save
+          npm run build
+
+      - name: Run Tests
+        run: php artisan test
+
+      - name: Type Checking
+        run: vendor/bin/phpstan --verbose
+
+      - name: Format Files
+        run: vendor/bin/pint
+        
+      - name: Commit changes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: 'Bump Dependencies'
