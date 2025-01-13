@@ -16,6 +16,9 @@ jobs:
 
     name: Automated Dependency Updates
 
+    permissions:
+      contents: write
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
