@@ -14,6 +14,9 @@ on:
 jobs:
   update:
     uses: Jubeki/actions/automated-dependency-updates.yml@main
+    with:
+      php: '8.3'
+      node: '22'
 ```
 
 ```yaml
@@ -25,4 +28,7 @@ on:
 jobs:
   update:
     uses: Jubeki/actions/tests.yml@main
+    with:
+      php: '8.3'
+      node: '22'
 ```
