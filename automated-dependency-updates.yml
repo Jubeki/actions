@@ -36,7 +36,6 @@ jobs:
         run: |
           composer update --prefer-stable --prefer-dist --no-interaction --no-progress
           composer bump --no-interaction
-          composer normalize --no-interaction
 
       - name: Bump and Build NPM Dependencies
         run: |
