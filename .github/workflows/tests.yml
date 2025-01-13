@@ -34,7 +34,7 @@ jobs:
 
       - name: Install Composer Dependencies
         run: |
-          composer install --prefer-stable --prefer-dist --no-interaction --no-progress
+          composer install --no-interaction
 
       - name: Install and Build NPM Dependencies
         run: |
