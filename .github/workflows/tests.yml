@@ -16,9 +16,6 @@ jobs:
 
     name: Tests
 
-    env:
-      BOOST_ENABLED: true
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
