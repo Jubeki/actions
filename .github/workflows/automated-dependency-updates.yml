@@ -35,6 +35,11 @@ jobs:
         with:
           node-version: ${{ inputs.node }}
 
+      - name: Prepare Environment
+        run: |
+          cp .env.example .env
+          touch database/database.sqlite
+
       - name: Bump and Normalize Composer Dependencies
         run: |
           composer update --prefer-stable --prefer-dist --no-interaction --no-progress
@@ -47,8 +52,6 @@ jobs:
 
       - name: Prepare Application
         run: |
-          cp .env.example .env
-          touch database/database.sqlite
           php artisan key:generate
           php artisan migrate --seed
 
