@@ -9,6 +9,9 @@ on:
       node:
         default: "22"
         type: string
+    secrets:
+      COMPOSER_AUTH_JSON:
+        required: false
 
 jobs:
   update:
@@ -39,6 +42,21 @@ jobs:
         run: |
           cp .env.example .env
           touch database/database.sqlite
+
+      - name: Configure Composer Authentication (optional)
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$HOME/.composer"
+
+          if [ -n "${{ secrets.COMPOSER_AUTH_JSON }}" ]; then
+            cat > "$HOME/.composer/auth.json" <<'JSON'
+          ${{ secrets.COMPOSER_AUTH_JSON }}
+          JSON
+            echo "Composer auth configured via COMPOSER_AUTH_JSON."
+          else
+            echo "No Composer auth secrets provided. Continuing without private package auth."
+          fi
 
       - name: Bump and Normalize Composer Dependencies
         run: |
