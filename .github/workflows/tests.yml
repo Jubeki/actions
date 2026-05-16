@@ -9,11 +9,13 @@ on:
       node:
         default: "22"
         type: string
+    secrets:
+      COMPOSER_AUTH_JSON:
+        required: false
 
 jobs:
   tests:
     runs-on: ubuntu-latest
-
     name: Tests
 
     steps:
@@ -32,9 +34,23 @@ jobs:
         with:
           node-version: ${{ inputs.node }}
 
-      - name: Install Composer Dependencies
+      - name: Configure Composer Authentication (optional)
+        shell: bash
         run: |
-          composer install --no-interaction
+          set -euo pipefail
+          mkdir -p "$HOME/.composer"
+
+          if [ -n "${{ secrets.COMPOSER_AUTH_JSON }}" ]; then
+            cat > "$HOME/.composer/auth.json" <<'JSON'
+          ${{ secrets.COMPOSER_AUTH_JSON }}
+          JSON
+            echo "Composer auth configured via COMPOSER_AUTH_JSON."
+          else
+            echo "No Composer auth secrets provided. Continuing without private package auth."
+          fi
+
+      - name: Install Composer Dependencies
+        run: composer install --no-interaction --prefer-dist
 
       - name: Install and Build NPM Dependencies
         run: |
